@@ -19,6 +19,7 @@
 ├── Code.js              # ฟังก์ชันฝั่ง Google Apps Script
 ├── Index.html           # หน้าแบบฟอร์มลงทะเบียน
 ├── Dashboard.html       # หน้า Dashboard ผู้เข้าชมวันนี้
+├── Setup.html           # หน้าตั้งค่า SPREADSHEET_ID ครั้งแรก
 ├── appsscript.json      # manifest ของ Google Apps Script
 ├── .clasp.json.example  # ตัวอย่าง config สำหรับ clasp
 └── .gitignore           # ignore ไฟล์ config ที่มี scriptId จริง
@@ -45,10 +46,12 @@
 
 ### 1. ตั้งค่า Google Sheets
 
-สร้าง Google Sheets สำหรับเก็บข้อมูลผู้เข้าชม แล้วนำ Spreadsheet ID มาใส่ในไฟล์ `Code.js`
+สร้าง Google Sheets สำหรับเก็บข้อมูลผู้เข้าชม แล้วตั้งค่า Spreadsheet ID ผ่านหน้า setup ของระบบ
 
 ```js
-const SPREADSHEET_ID = "ใส่_SPREADSHEET_ID_ของคุณ";
+const SPREADSHEET_ID = PropertiesService
+  .getScriptProperties()
+  .getProperty("SPREADSHEET_ID");
 const SHEET_NAME = "Visitors";
 ```
 
@@ -57,6 +60,19 @@ Spreadsheet ID คือส่วนที่อยู่ใน URL ของ Go
 ```text
 https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit
 ```
+
+ถ้ายังไม่ได้ตั้งค่า `SPREADSHEET_ID` เมื่อเปิด Web App ระบบจะแสดงหน้า setup ให้อัตโนมัติ หรือเปิดโดยตรงได้ที่:
+
+```text
+https://script.google.com/macros/s/DEPLOYMENT_ID/exec?page=setup
+```
+
+ในหน้า setup สามารถตั้งค่าได้ 2 วิธี:
+
+- วาง `SPREADSHEET_ID` หรือ URL ของ Google Sheets แล้วกดบันทึก
+- ถ้า Apps Script ผูกอยู่กับ Google Sheets อยู่แล้ว ให้กดใช้ Google Sheet ที่ผูกกับ Apps Script นี้ เพื่อดึง ID อัตโนมัติ
+
+หลังตั้งค่าสำเร็จแล้ว หน้า setup จะไม่เปิดให้บันทึกทับผ่าน Web App เพื่อป้องกันคนที่มี URL เปลี่ยนค่า config หากต้องการเปลี่ยน `SPREADSHEET_ID` ให้แก้ผ่าน `Project Settings` > `Script Properties` ใน Apps Script Editor
 
 ### 2. ตั้งค่า clasp
 

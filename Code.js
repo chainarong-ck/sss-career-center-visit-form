@@ -1,4 +1,6 @@
-const SPREADSHEET_ID = "ใส่_SPREADSHEET_ID_ของคุณ";
+const SPREADSHEET_ID = PropertiesService
+  .getScriptProperties()
+  .getProperty("SPREADSHEET_ID");
 const SHEET_NAME = "Visitors";
 
 // ถ้ามีหน้าเว็บหลักของศูนย์ ให้ใส่ URL ตรงนี้
@@ -7,6 +9,17 @@ const HOME_URL = "";
 
 function doGet(e) {
   const page = e?.parameter?.page || "form";
+
+  if (!SPREADSHEET_ID) {
+    const template = HtmlService.createTemplateFromFile("Setup");
+    template.formUrl = getWebAppUrl_();
+
+    return template
+      .evaluate()
+      .setTitle("ตั้งค่าระบบลงทะเบียน")
+      .addMetaTag("viewport", "width=device-width, initial-scale=1")
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  }
 
   if (page === "dashboard") {
     return HtmlService
@@ -29,7 +42,16 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
+function getWebAppUrl_() {
+  try {
+    return ScriptApp.getService().getUrl() || "";
+  } catch (error) {
+    return "";
+  }
+}
+
 function submitVisitorForm(formData) {
+  assertSpreadsheetConfigured_();
   validateFormData_(formData);
 
   const lock = LockService.getScriptLock();
@@ -191,6 +213,8 @@ function normalizeText_(value) {
 }
 
 function getTodayVisitorStats() {
+  assertSpreadsheetConfigured_();
+
   const cache = CacheService.getScriptCache();
   const cacheKey = "todayVisitorStats";
   const cached = cache.get(cacheKey);
@@ -267,4 +291,84 @@ function buildTodayVisitorStats_() {
     zones,
     updatedAt: Utilities.formatDate(new Date(), timezone, "HH:mm:ss"),
   };
+}
+
+function getSetupInfo() {
+  return {
+    configured: Boolean(SPREADSHEET_ID),
+    spreadsheetId: SPREADSHEET_ID || "",
+    containerSpreadsheet: getContainerSpreadsheetInfo_(),
+  };
+}
+
+function saveSpreadsheetId(spreadsheetId) {
+  if (SPREADSHEET_ID) {
+    throw new Error("ระบบตั้งค่า SPREADSHEET_ID แล้ว หากต้องการเปลี่ยนค่า กรุณาแก้ใน Script Properties");
+  }
+
+  const normalizedId = normalizeSpreadsheetId_(spreadsheetId);
+
+  if (!normalizedId) {
+    throw new Error("กรุณากรอก SPREADSHEET_ID");
+  }
+
+  const ss = SpreadsheetApp.openById(normalizedId);
+
+  PropertiesService
+    .getScriptProperties()
+    .setProperty("SPREADSHEET_ID", normalizedId);
+
+  CacheService.getScriptCache().remove("todayVisitorStats");
+
+  return {
+    ok: true,
+    spreadsheetId: normalizedId,
+    spreadsheetName: ss.getName(),
+  };
+}
+
+function getContainerSpreadsheetInfo() {
+  return getContainerSpreadsheetInfo_();
+}
+
+function getContainerSpreadsheetInfo_() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    if (!ss) {
+      return {
+        found: false,
+        message: "ไม่พบ Google Sheets ที่ผูกกับ Apps Script นี้",
+      };
+    }
+
+    return {
+      found: true,
+      spreadsheetId: ss.getId(),
+      spreadsheetName: ss.getName(),
+    };
+  } catch (error) {
+    return {
+      found: false,
+      message: "ไม่สามารถอ่าน Google Sheets ที่ผูกกับ Apps Script นี้ได้",
+    };
+  }
+}
+
+function normalizeSpreadsheetId_(value) {
+  const text = String(value || "").trim();
+
+  if (!text) {
+    return "";
+  }
+
+  const match = text.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+
+  return match ? match[1] : text;
+}
+
+function assertSpreadsheetConfigured_() {
+  if (!SPREADSHEET_ID) {
+    throw new Error("ยังไม่ได้ตั้งค่า SPREADSHEET_ID กรุณาเปิดหน้า setup เพื่อตั้งค่าระบบ");
+  }
 }

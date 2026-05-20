@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <title>ตั้งค่าระบบลงทะเบียน</title>
+
+    <style>
+      :root {
+        --brown: #7a3f1d;
+        --brown-dark: #4f2814;
+        --green: #4f6f35;
+        --green-dark: #314722;
+        --paper: #fffaf0;
+        --line: rgba(122, 63, 29, 0.18);
+        --text: #2e2118;
+        --muted: #76685d;
+        --danger: #b42318;
+        --success: #267a3e;
+        --shadow: 0 24px 70px rgba(62, 35, 18, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(255, 214, 143, 0.75), transparent 35%),
+          radial-gradient(circle at bottom right, rgba(106, 135, 69, 0.32), transparent 35%),
+          linear-gradient(135deg, #fff4dc 0%, #f6dfb7 45%, #ead0a2 100%);
+      }
+
+      .setup {
+        width: min(100%, 760px);
+        overflow: hidden;
+        border-radius: 28px;
+        background: rgba(255, 250, 240, 0.96);
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        padding: 30px;
+        background: linear-gradient(135deg, #7a3f1d, #4f6f35);
+        color: white;
+      }
+
+      .badge {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 8px 14px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 16px 0 8px;
+        font-size: clamp(30px, 5vw, 48px);
+        line-height: 1.08;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: #fff1c8;
+        line-height: 1.65;
+      }
+
+      .content {
+        display: grid;
+        gap: 18px;
+        padding: 28px;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+
+      label {
+        color: var(--brown-dark);
+        font-weight: 900;
+      }
+
+      input {
+        width: 100%;
+        border: 1px solid rgba(122, 63, 29, 0.25);
+        border-radius: 16px;
+        padding: 14px 15px;
+        background: white;
+        color: var(--text);
+        font: inherit;
+        outline: none;
+      }
+
+      input:focus {
+        border-color: var(--green);
+        box-shadow: 0 0 0 4px rgba(79, 111, 53, 0.13);
+      }
+
+      .hint {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      button,
+      .link-button {
+        border: 0;
+        border-radius: 16px;
+        padding: 13px 18px;
+        font: inherit;
+        font-weight: 900;
+        cursor: pointer;
+        text-decoration: none;
+        transition: 0.18s ease;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.65;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--brown), #b6723a);
+        color: white;
+        box-shadow: 0 12px 28px rgba(122, 63, 29, 0.25);
+      }
+
+      .btn-secondary {
+        background: #edf5e7;
+        color: var(--green-dark);
+        border: 1px solid rgba(79, 111, 53, 0.2);
+      }
+
+      .link-button {
+        display: none;
+        width: fit-content;
+        background: var(--green);
+        color: white;
+      }
+
+      .message {
+        display: none;
+        border-radius: 18px;
+        padding: 16px;
+        line-height: 1.6;
+      }
+
+      .message.show {
+        display: block;
+      }
+
+      .message.error {
+        background: #fff0ef;
+        border: 1px solid rgba(180, 35, 24, 0.22);
+        color: var(--danger);
+      }
+
+      .message.success {
+        background: #effaf2;
+        border: 1px solid rgba(38, 122, 62, 0.22);
+        color: var(--success);
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 14px;
+        }
+
+        .setup {
+          border-radius: 22px;
+        }
+
+        .hero,
+        .content {
+          padding: 22px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="setup">
+      <section class="hero">
+        <div class="badge">System Setup</div>
+        <h1>ตั้งค่าระบบครั้งแรก</h1>
+        <p class="subtitle">
+          กรุณาตั้งค่า Google Sheets ที่จะใช้เก็บข้อมูลผู้เข้าชม
+          ระบบจะบันทึกค่าไว้ใน Script Properties โดยไม่ต้องแก้ source code
+        </p>
+      </section>
+
+      <section class="content">
+        <div id="message" class="message"></div>
+
+        <div class="field">
+          <label for="spreadsheetId">SPREADSHEET_ID</label>
+          <input
+            id="spreadsheetId"
+            type="text"
+            autocomplete="off"
+            placeholder="วาง Spreadsheet ID หรือ URL ของ Google Sheets"
+          />
+          <p class="hint">
+            วางได้ทั้ง ID โดยตรง หรือ URL รูปแบบ https://docs.google.com/spreadsheets/d/...
+          </p>
+        </div>
+
+        <div class="actions">
+          <button id="saveButton" class="btn-primary" type="button">
+            บันทึกการตั้งค่า
+          </button>
+          <button id="detectButton" class="btn-secondary" type="button">
+            ใช้ Google Sheet ที่ผูกกับ Apps Script นี้
+          </button>
+        </div>
+
+        <a id="formLink" class="link-button" href="<?= formUrl ?>" target="_top">
+          ไปที่หน้าลงทะเบียน
+        </a>
+      </section>
+    </main>
+
+    <script>
+      const spreadsheetIdInput = document.getElementById("spreadsheetId");
+      const saveButton = document.getElementById("saveButton");
+      const detectButton = document.getElementById("detectButton");
+      const message = document.getElementById("message");
+      const formLink = document.getElementById("formLink");
+      const formUrl = "<?= formUrl ?>";
+
+      if (formUrl) {
+        formLink.href = formUrl;
+      }
+
+      loadSetupInfo();
+
+      saveButton.addEventListener("click", () => {
+        saveSpreadsheetId(spreadsheetIdInput.value);
+      });
+
+      detectButton.addEventListener("click", () => {
+        setBusy(true, "กำลังค้นหา Google Sheet...");
+
+        google.script.run
+          .withSuccessHandler((info) => {
+            setBusy(false);
+
+            if (!info || !info.found) {
+              showMessage(info?.message || "ไม่พบ Google Sheet ที่ผูกกับ Apps Script นี้", "error");
+              return;
+            }
+
+            spreadsheetIdInput.value = info.spreadsheetId;
+            showMessage("พบ Google Sheet: " + info.spreadsheetName + " กดบันทึกเพื่อใช้งานค่านี้", "success");
+          })
+          .withFailureHandler(handleError)
+          .getContainerSpreadsheetInfo();
+      });
+
+      function loadSetupInfo() {
+        setBusy(true, "กำลังโหลดข้อมูล...");
+
+        google.script.run
+          .withSuccessHandler((info) => {
+            setBusy(false);
+
+            if (info.spreadsheetId) {
+              spreadsheetIdInput.value = info.spreadsheetId;
+              showMessage("ระบบมีค่า SPREADSHEET_ID อยู่แล้ว สามารถบันทึกทับได้หากต้องการเปลี่ยน", "success");
+              formLink.style.display = "inline-flex";
+              return;
+            }
+
+            if (info.containerSpreadsheet?.found) {
+              spreadsheetIdInput.value = info.containerSpreadsheet.spreadsheetId;
+              showMessage("ระบบพบ Google Sheet ที่ผูกกับ Apps Script นี้แล้ว กดบันทึกเพื่อเริ่มใช้งาน", "success");
+            }
+          })
+          .withFailureHandler(handleError)
+          .getSetupInfo();
+      }
+
+      function saveSpreadsheetId(spreadsheetId) {
+        setBusy(true, "กำลังบันทึกการตั้งค่า...");
+
+        google.script.run
+          .withSuccessHandler((result) => {
+            setBusy(false);
+            showMessage("บันทึกสำเร็จ: " + result.spreadsheetName, "success");
+            formLink.style.display = "inline-flex";
+          })
+          .withFailureHandler(handleError)
+          .saveSpreadsheetId(spreadsheetId);
+      }
+
+      function handleError(error) {
+        setBusy(false);
+        showMessage(error.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "error");
+      }
+
+      function showMessage(text, type) {
+        message.textContent = text;
+        message.className = "message show " + type;
+      }
+
+      function setBusy(isBusy, text) {
+        saveButton.disabled = isBusy;
+        detectButton.disabled = isBusy;
+        saveButton.textContent = isBusy ? (text || "กำลังทำงาน...") : "บันทึกการตั้งค่า";
+      }
+    </script>
+  </body>
+</html>
