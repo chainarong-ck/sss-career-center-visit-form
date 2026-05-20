@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <title>ลงทะเบียนเข้าชมศูนย์การงานอาชีพ</title>
+
+    <style>
+      :root {
+        --brown: #7a3f1d;
+        --brown-dark: #4f2814;
+        --brown-soft: #b6723a;
+        --green: #4f6f35;
+        --green-dark: #314722;
+        --cream: #fff7e8;
+        --paper: #fffaf0;
+        --line: rgba(122, 63, 29, 0.18);
+        --text: #2e2118;
+        --muted: #76685d;
+        --danger: #b42318;
+        --success: #267a3e;
+        --shadow: 0 24px 70px rgba(62, 35, 18, 0.22);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(255, 214, 143, 0.75), transparent 35%),
+          radial-gradient(circle at bottom right, rgba(106, 135, 69, 0.32), transparent 35%),
+          linear-gradient(135deg, #fff4dc 0%, #f6dfb7 45%, #ead0a2 100%);
+      }
+
+      .page {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 30px;
+        background:
+          linear-gradient(rgba(64, 34, 17, 0.30), rgba(64, 34, 17, 0.30)),
+          linear-gradient(135deg, #8a4b27, #45602f);
+        color: white;
+        padding: 34px 32px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 12% 30%, rgba(255,255,255,0.22), transparent 14%),
+          radial-gradient(circle at 88% 20%, rgba(255,255,255,0.16), transparent 18%),
+          linear-gradient(90deg, rgba(0,0,0,0.10), transparent);
+        pointer-events: none;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 24px;
+        align-items: center;
+      }
+
+      .badge {
+        display: inline-flex;
+        width: fit-content;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.26);
+        padding: 8px 14px;
+        font-size: 14px;
+        font-weight: 700;
+        backdrop-filter: blur(10px);
+      }
+
+      h1 {
+        margin: 18px 0 8px;
+        font-size: clamp(30px, 5vw, 58px);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+      }
+
+      .subtitle {
+        margin: 0;
+        font-size: clamp(17px, 2.4vw, 24px);
+        font-weight: 700;
+        color: #fff1c8;
+      }
+
+      .description {
+        max-width: 680px;
+        margin: 16px 0 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        line-height: 1.75;
+      }
+
+      .hero-card {
+        border-radius: 24px;
+        background: rgba(255, 250, 240, 0.95);
+        color: var(--text);
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.55);
+      }
+
+      .hero-card-title {
+        margin: 0 0 12px;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--brown-dark);
+      }
+
+      .zone-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .zone-chip {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: #fff4dd;
+        border: 1px solid var(--line);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .zone-icon {
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: var(--brown);
+        color: white;
+        flex: 0 0 auto;
+      }
+
+      .main-grid {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 24px;
+        margin-top: 24px;
+      }
+
+      .panel {
+        border-radius: 26px;
+        background: rgba(255, 250, 240, 0.92);
+        border: 1px solid rgba(122, 63, 29, 0.16);
+        box-shadow: 0 18px 45px rgba(62, 35, 18, 0.12);
+        overflow: hidden;
+      }
+
+      .info-panel {
+        padding: 26px;
+      }
+
+      .info-panel h2,
+      .form-panel h2 {
+        margin: 0;
+        font-size: 24px;
+        color: var(--brown-dark);
+      }
+
+      .info-panel p {
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      .steps {
+        display: grid;
+        gap: 14px;
+        margin-top: 20px;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 12px;
+        align-items: start;
+      }
+
+      .step-no {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: var(--green);
+        color: white;
+        font-weight: 900;
+      }
+
+      .step strong {
+        display: block;
+        margin-bottom: 3px;
+        color: var(--brown-dark);
+      }
+
+      .step span {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .form-panel {
+        padding: 26px;
+      }
+
+      .form-header {
+        margin-bottom: 20px;
+      }
+
+      .form-header p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .form {
+        display: grid;
+        gap: 16px;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+
+      label {
+        font-weight: 800;
+        color: var(--brown-dark);
+      }
+
+      .required {
+        color: var(--danger);
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid rgba(122, 63, 29, 0.25);
+        border-radius: 16px;
+        padding: 14px 15px;
+        background: white;
+        color: var(--text);
+        font: inherit;
+        outline: none;
+        transition: 0.18s ease;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--green);
+        box-shadow: 0 0 0 4px rgba(79, 111, 53, 0.13);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 92px;
+      }
+
+      .hint {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .other-field {
+        display: none;
+      }
+
+      .other-field.show {
+        display: grid;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 16px;
+        padding: 14px 22px;
+        font: inherit;
+        font-weight: 900;
+        cursor: pointer;
+        transition: 0.18s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--brown), var(--brown-soft));
+        color: white;
+        box-shadow: 0 12px 28px rgba(122, 63, 29, 0.28);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .message {
+        display: none;
+        border-radius: 18px;
+        padding: 16px;
+        line-height: 1.6;
+      }
+
+      .message.show {
+        display: block;
+      }
+
+      .message.error {
+        background: #fff0ef;
+        border: 1px solid rgba(180, 35, 24, 0.22);
+        color: var(--danger);
+      }
+
+      .message.success {
+        background: #effaf2;
+        border: 1px solid rgba(38, 122, 62, 0.22);
+        color: var(--success);
+      }
+
+      .success-box {
+        display: none;
+        text-align: center;
+        padding: 30px 20px;
+      }
+
+      .success-box.show {
+        display: block;
+      }
+
+      .success-icon {
+        width: 74px;
+        height: 74px;
+        margin: 0 auto 16px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: #eaf8ee;
+        color: var(--success);
+        font-size: 36px;
+        font-weight: 900;
+      }
+
+      .success-box h2 {
+        margin: 0 0 10px;
+        color: var(--green-dark);
+        font-size: 30px;
+      }
+
+      .success-box p {
+        margin: 6px 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .visitor-no {
+        display: inline-flex;
+        margin-top: 14px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: #fff4dd;
+        color: var(--brown-dark);
+        font-weight: 900;
+      }
+
+      .home-link {
+        display: inline-flex;
+        margin-top: 18px;
+        text-decoration: none;
+        border-radius: 16px;
+        padding: 13px 18px;
+        background: var(--green);
+        color: white;
+        font-weight: 900;
+      }
+
+      footer {
+        padding: 20px 6px 6px;
+        text-align: center;
+        color: rgba(79, 40, 20, 0.75);
+        font-size: 13px;
+      }
+
+      @media (max-width: 860px) {
+        .hero-content,
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .page {
+          padding: 14px;
+        }
+
+        .hero,
+        .panel {
+          border-radius: 22px;
+        }
+
+        .hero {
+          padding: 26px 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+      <section class="hero">
+        <div class="hero-content">
+          <div>
+            <div class="badge">Edutainment Complex</div>
+            <h1>ศูนย์การงานอาชีพ</h1>
+            <p class="subtitle">โรงเรียนศรีศักดิ์สุวรรณวิทยา</p>
+            <p class="description">
+              ลงทะเบียนเข้าชมศูนย์การเรียนรู้แบบบูรณาการ
+              ที่รวมกิจกรรมอาชีพ นิทรรศการท้องถิ่น งานสร้างสรรค์
+              และผลงานนักเรียนไว้ในพื้นที่เดียว
+            </p>
+          </div>
+
+          <div class="hero-card">
+            <p class="hero-card-title">โซนภายในศูนย์</p>
+            <div class="zone-list">
+              <div class="zone-chip">
+                <span class="zone-icon">☕</span>
+                <span>โซนที่ 1 คาเฟ่เติมพลัง</span>
+              </div>
+              <div class="zone-chip">
+                <span class="zone-icon">🏺</span>
+                <span>โซนที่ 2 Heritage & Exhibition</span>
+              </div>
+              <div class="zone-chip">
+                <span class="zone-icon">🎨</span>
+                <span>โซนที่ 3 พื้นที่สร้างสรรค์และการสาธิต</span>
+              </div>
+              <div class="zone-chip">
+                <span class="zone-icon">🛍️</span>
+                <span>โซนที่ 4 มุมจำหน่ายสินค้าและของที่ระลึก</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main class="main-grid">
+        <section class="panel info-panel">
+          <h2>ขั้นตอนการเข้าชม</h2>
+          <p>
+            กรุณากรอกข้อมูลเพื่อลงทะเบียนก่อนเข้าชม
+            ข้อมูลนี้ใช้สำหรับสรุปจำนวนผู้เข้าชม
+            วิเคราะห์ความสนใจในแต่ละโซน
+            และพัฒนาศูนย์การเรียนรู้ของโรงเรียน
+          </p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-no">1</div>
+              <div>
+                <strong>กรอกข้อมูลผู้เข้าชม</strong>
+                <span>ระบุชื่อ หน่วยงาน และประเภทผู้เข้าร่วม</span>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-no">2</div>
+              <div>
+                <strong>เลือกโซนที่สนใจ</strong>
+                <span>ช่วยให้โรงเรียนทราบความสนใจของผู้เข้าชม</span>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-no">3</div>
+              <div>
+                <strong>เริ่มเยี่ยมชมศูนย์</strong>
+                <span>ระบบจะบันทึกข้อมูลและแสดงหมายเลขผู้เข้าชม</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel form-panel">
+          <div id="formWrapper">
+            <div class="form-header">
+              <h2>ลงทะเบียนเข้าชม</h2>
+              <p>ใช้เวลาประมาณ 1 นาที กรุณากรอกข้อมูลให้ครบถ้วน</p>
+            </div>
+
+            <div id="message" class="message"></div>
+
+            <form id="visitorForm" class="form">
+              <div class="field">
+                <label for="fullName">ชื่อ - นามสกุล <span class="required">*</span></label>
+                <input id="fullName" name="fullName" type="text" autocomplete="name" required />
+              </div>
+
+              <div class="field">
+                <label for="organization">หน่วยงาน / โรงเรียน</label>
+                <input id="organization" name="organization" type="text" />
+              </div>
+
+              <div class="field">
+                <label for="phone">เบอร์โทรศัพท์ติดต่อ</label>
+                <input id="phone" name="phone" type="tel" inputmode="tel" />
+                <div class="hint">ใช้สำหรับติดต่อประสานงานเพิ่มเติมเท่านั้น</div>
+              </div>
+
+              <div class="field">
+                <label for="participantType">ประเภทผู้เข้าร่วม <span class="required">*</span></label>
+                <select id="participantType" name="participantType" required>
+                  <option value="">-- เลือกประเภทผู้เข้าร่วม --</option>
+                  <option value="บุคลากรภายในโรงเรียน">บุคลากรภายในโรงเรียน</option>
+                  <option value="บุคลากรภายนอกโรงเรียน">บุคลากรภายนอกโรงเรียน</option>
+                  <option value="วิทยากร">วิทยากร</option>
+                  <option value="ผู้บริหาร">ผู้บริหาร</option>
+                  <option value="นักเรียน">นักเรียน</option>
+                  <option value="อื่น ๆ">อื่น ๆ</option>
+                </select>
+              </div>
+
+              <div id="otherParticipantTypeField" class="field other-field">
+                <label for="otherParticipantType">ระบุประเภทผู้เข้าร่วม</label>
+                <input id="otherParticipantType" name="otherParticipantType" type="text" />
+              </div>
+
+              <div class="field">
+                <label for="interestedZone">ท่านสนใจเข้าชมโซนใดมากที่สุด <span class="required">*</span></label>
+                <select id="interestedZone" name="interestedZone" required>
+                  <option value="">-- เลือกโซนที่สนใจ --</option>
+                  <option value="โซนที่ 1 คาเฟ่เติมพลัง (Cafe)">โซนที่ 1 คาเฟ่เติมพลัง (Cafe)</option>
+                  <option value="โซนที่ 2 Heritage & Exhibition (นิทรรศการ)">โซนที่ 2 Heritage & Exhibition (นิทรรศการ)</option>
+                  <option value="โซนที่ 3 พื้นที่สร้างสรรค์และการสาธิต (Workshop & Demonstration)">โซนที่ 3 พื้นที่สร้างสรรค์และการสาธิต (Workshop & Demonstration)</option>
+                  <option value="โซนที่ 4 มุมจำหน่ายสินค้าและของที่ระลึก (Souvenir Shop)">โซนที่ 4 มุมจำหน่ายสินค้าและของที่ระลึก (Souvenir Shop)</option>
+                  <option value="สนใจเข้าชมทุกโซน">สนใจเข้าชมทุกโซน</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="note">หมายเหตุเพิ่มเติม</label>
+                <textarea id="note" name="note" placeholder="เช่น ต้องการเอกสารเพิ่มเติม สนใจแลกเปลี่ยนเรียนรู้ หรือข้อเสนอแนะ"></textarea>
+              </div>
+
+              <div class="actions">
+                <button id="submitButton" class="btn-primary" type="submit">
+                  ลงทะเบียนเข้าชม
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div id="successBox" class="success-box">
+            <div class="success-icon">✓</div>
+            <h2>ลงทะเบียนสำเร็จ</h2>
+            <p id="successName"></p>
+            <p>ยินดีต้อนรับเข้าสู่ศูนย์การงานอาชีพ</p>
+            <div id="visitorNo" class="visitor-no"></div>
+            <div id="homeLinkWrapper"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        Edutainment Complex · ศูนย์การงานอาชีพโรงเรียนศรีศักดิ์สุวรรณวิทยา
+      </footer>
+    </div>
+
+    <script>
+      const form = document.getElementById("visitorForm");
+      const submitButton = document.getElementById("submitButton");
+      const message = document.getElementById("message");
+      const formWrapper = document.getElementById("formWrapper");
+      const successBox = document.getElementById("successBox");
+      const participantType = document.getElementById("participantType");
+      const otherField = document.getElementById("otherParticipantTypeField");
+
+      participantType.addEventListener("change", () => {
+        const isOther = participantType.value === "อื่น ๆ";
+        otherField.classList.toggle("show", isOther);
+      });
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        hideMessage();
+
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        const formData = Object.fromEntries(new FormData(form).entries());
+
+        formData.userAgent = navigator.userAgent;
+        formData.language = navigator.language;
+
+        submitButton.disabled = true;
+        submitButton.textContent = "กำลังบันทึกข้อมูล...";
+
+        google.script.run
+          .withSuccessHandler(handleSuccess)
+          .withFailureHandler(handleError)
+          .submitVisitorForm(formData);
+      });
+
+      function handleSuccess(result) {
+        if (result.duplicate) {
+          formWrapper.style.display = "none";
+          successBox.classList.add("show");
+
+          document.getElementById("successName").textContent =
+            "คุณ " + result.fullName + " เคยลงทะเบียนเข้าชมแล้วในวันนี้";
+
+          document.querySelector("#successBox h2").textContent =
+            "พบการลงทะเบียนแล้ว";
+
+          document.getElementById("visitorNo").textContent =
+            "หมายเลขผู้เข้าชมของคุณคือ " + result.visitorNo;
+
+          if (result.homeUrl) {
+            const wrapper = document.getElementById("homeLinkWrapper");
+            wrapper.innerHTML =
+              '<a class="home-link" href="' + result.homeUrl + '" target="_top">เข้าสู่หน้าแนะนำศูนย์</a>';
+
+            setTimeout(() => {
+              window.top.location.href = result.homeUrl;
+            }, 3500);
+          }
+
+          return;
+        }
+
+        formWrapper.style.display = "none";
+        successBox.classList.add("show");
+
+        document.getElementById("successName").textContent =
+          "ขอบคุณคุณ " + result.fullName + " สำหรับการลงทะเบียน";
+
+        document.getElementById("visitorNo").textContent =
+          "ผู้เข้าชมลำดับที่ " + result.visitorNo;
+
+        if (result.homeUrl) {
+          const wrapper = document.getElementById("homeLinkWrapper");
+          wrapper.innerHTML =
+            '<a class="home-link" href="' + result.homeUrl + '" target="_top">เข้าสู่หน้าแนะนำศูนย์</a>';
+
+          setTimeout(() => {
+            window.top.location.href = result.homeUrl;
+          }, 3500);
+        }
+      }
+
+      function handleError(error) {
+        submitButton.disabled = false;
+        submitButton.textContent = "ลงทะเบียนเข้าชม";
+        showMessage(error.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "error");
+      }
+
+      function showMessage(text, type) {
+        message.textContent = text;
+        message.className = "message show " + type;
+      }
+
+      function hideMessage() {
+        message.textContent = "";
+        message.className = "message";
+      }
+    </script>
+  </body>
+</html>
